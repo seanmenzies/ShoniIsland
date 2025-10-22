@@ -179,7 +179,6 @@ void UAITask_AsyncMoveTo::OnAsynPathResult(uint32 QueryID, ENavigationQueryResul
 {
 	// switch RVO back on
 	UShoniCrowdManager::SetAsyncInFlight(OwnerController->GetWorld(), false);
-	// 1) log errors and abort if any found
     switch (Result)
     {
     case ENavigationQueryResult::Error:
@@ -199,11 +198,9 @@ void UAITask_AsyncMoveTo::OnAsynPathResult(uint32 QueryID, ENavigationQueryResul
         return;
     }
 
-    // 2) Success -> hand off to PathFollowingComponent
     UPathFollowingComponent* PFComp = OwnerController->GetPathFollowingComponent();
     MoveRequestID = PFComp->RequestMove(MoveRequest, _Path);
 
-    // 3) Hook up the same delegates you had before
     PathFinishDelegateHandle = PFComp->OnRequestFinished.AddUObject(this, &UAITask_AsyncMoveTo::OnRequestFinished);
     SetObservedPath(_Path);
 }
